@@ -1,0 +1,20 @@
+name: Build and push to GHCR
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  build:
+    uses: vchatela-org/shared-workflows/.github/workflows/docker-build-push-ghcr.yml@v1
+    with:
+      image_name: notion-backup
+      platforms: linux/amd64
+    # No registry secrets: the workflow pushes with the run's GITHUB_TOKEN.
+    # It runs on a GitHub-hosted runner because this repository is public.
