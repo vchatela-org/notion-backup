@@ -42,8 +42,14 @@ RUN pip install --no-cache-dir --upgrade pip setuptools wheel \
     && python -m pip uninstall -y pip setuptools wheel \
     && rm -rf /root/.cache/pip
 
-# Set non-root user
-RUN useradd --create-home appuser
+# Set non-root user. shadow >= 4.15 (Debian trixie) creates the home directory
+# 0700, which leaves /home/appuser/app unreachable when the container is run
+# with an arbitrary uid (the homelab CronJob uses 1036:100 to match the NFS
+# export), and python then fails with "[Errno 13] Permission denied" on
+# main.py. The source tree is world-readable (0644/0755), so only the home
+# directory itself needs opening up.
+RUN useradd --create-home appuser \
+    && chmod 0755 /home/appuser
 USER appuser
 WORKDIR /home/appuser/app
 
