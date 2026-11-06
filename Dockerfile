@@ -13,7 +13,17 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 WORKDIR /src
 
+# rclone 1.75.2's go.mod pins Go modules the image scan reports as vulnerable:
+# go-chi/chi/v5 5.3.1 (CVE-2026-114437), x/net 0.60.0 (CVE-2026-78661,
+# CVE-2026-97045) and x/crypto 0.57.0 (GO-2026-5932). They are all minor bumps
+# with no API change, so resolve the fixed releases into the module graph
+# instead of moving off the rclone release the backup job is tested against.
 RUN git clone --depth 1 --branch "v${RCLONE_VER}" https://github.com/rclone/rclone.git . \
+    && go get \
+        github.com/go-chi/chi/v5@v5.4.0 \
+        golang.org/x/crypto@v0.58.1-0.20261009181718-2f1f834330b2 \
+        golang.org/x/net@v0.62.0 \
+    && go mod tidy \
     && CGO_ENABLED=0 go build -trimpath \
     -ldflags "-s -w -X github.com/rclone/rclone/fs.Version=v${RCLONE_VER}" \
     -o /usr/local/bin/rclone .
