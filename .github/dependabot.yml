@@ -1,0 +1,30 @@
+version: 2
+updates:
+  # The published images are built from deploy/v2026.10.29, not from main, so
+  # version-update PRs are targeted there. Note that this only redirects version
+  # updates: GitHub always opens *security* update PRs against the default
+  # branch, which is still main. Make the deploy branch the default branch if
+  # security-update PRs must land on the line that ships.
+  - package-ecosystem: "pip"
+    directory: "/"
+    target-branch: "deploy/v2026.10.29"
+    cooldown:
+      default-days: 2
+    schedule:
+      interval: "weekly"
+
+  - package-ecosystem: "docker"
+    directory: "/"
+    target-branch: "deploy/v2026.10.29"
+    cooldown:
+      default-days: 2
+    schedule:
+      interval: "weekly"
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    target-branch: "deploy/v2026.10.29"
+    cooldown:
+      default-days: 2
+    schedule:
+      interval: "weekly"
