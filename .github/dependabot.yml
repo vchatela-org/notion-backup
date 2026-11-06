@@ -1,0 +1,26 @@
+version: 2
+updates:
+  # This branch is the default and the line the published images are built
+  # from, so Dependabot alerts and security-update PRs cover exactly what
+  # ships. Renovate only runs on homelab-gitops (image tags); nothing else
+  # updates this repository's dependencies.
+  - package-ecosystem: "pip"
+    directory: "/"
+    cooldown:
+      default-days: 2
+    schedule:
+      interval: "weekly"
+
+  - package-ecosystem: "docker"
+    directory: "/"
+    cooldown:
+      default-days: 2
+    schedule:
+      interval: "weekly"
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    cooldown:
+      default-days: 2
+    schedule:
+      interval: "weekly"
